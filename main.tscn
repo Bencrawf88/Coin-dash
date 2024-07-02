@@ -1,0 +1,60 @@
+[gd_scene load_steps=12 format=3 uid="uid://b6ydsmg74l8pb"]
+
+[ext_resource type="Script" path="res://main.gd" id="1_prykr"]
+[ext_resource type="Texture2D" uid="uid://cyfcij4whh6a1" path="res://coin_dash_assets/assets/grass.png" id="1_ybom7"]
+[ext_resource type="PackedScene" uid="uid://hminh5yslxm2" path="res://player.tscn" id="2_pj4vb"]
+[ext_resource type="PackedScene" uid="uid://dmhw7m0vpqh51" path="res://coin.tscn" id="2_uffag"]
+[ext_resource type="PackedScene" uid="uid://c6o6yh4phf14b" path="res://powerup.tscn" id="3_u40mm"]
+[ext_resource type="PackedScene" uid="uid://dytveyvx2a0d5" path="res://catcus.tscn" id="4_jfo7o"]
+[ext_resource type="PackedScene" uid="uid://t7ang05r3qrd" path="res://hud.tscn" id="5_eisbw"]
+[ext_resource type="AudioStream" uid="uid://bnmu12nf11frg" path="res://coin_dash_assets/assets/audio/Coin.wav" id="6_3is46"]
+[ext_resource type="AudioStream" uid="uid://b0eapdupr23oh" path="res://coin_dash_assets/assets/audio/Level.wav" id="7_xlgkq"]
+[ext_resource type="AudioStream" uid="uid://c7x5hudvc3o7t" path="res://coin_dash_assets/assets/audio/EndSound.wav" id="8_rb38n"]
+[ext_resource type="AudioStream" uid="uid://d2lxctwxfse8w" path="res://coin_dash_assets/assets/audio/Powerup.wav" id="9_1pa08"]
+
+[node name="Main" type="Node"]
+script = ExtResource("1_prykr")
+coin_scene = ExtResource("2_uffag")
+powerup_scene = ExtResource("3_u40mm")
+obstacles_scene = ExtResource("4_jfo7o")
+
+[node name="Background" type="TextureRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_ybom7")
+stretch_mode = 1
+
+[node name="Player" parent="." groups=["Player"] instance=ExtResource("2_pj4vb")]
+
+[node name="GameTimer" type="Timer" parent="."]
+
+[node name="HUD" parent="." instance=ExtResource("5_eisbw")]
+
+[node name="CoinSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_3is46")
+
+[node name="LevelSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_xlgkq")
+
+[node name="EndSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("8_rb38n")
+
+[node name="PowerupTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="PowerupSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("9_1pa08")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 3.0
+one_shot = true
+
+[connection signal="hurt" from="Player" to="." method="_on_player_hurt"]
+[connection signal="pickup" from="Player" to="." method="_on_player_pickup"]
+[connection signal="timeout" from="GameTimer" to="." method="_on_game_timer_timeout"]
+[connection signal="start_game" from="HUD" to="." method="_on_hud_start_game"]
+[connection signal="timeout" from="PowerupTimer" to="." method="_on_powerup_timer_timeout"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
